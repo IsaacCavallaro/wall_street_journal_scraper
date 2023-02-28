@@ -42,6 +42,3 @@ psql -d your_database_name -U your_username -f sql/create_tables.sql
 ```
 
 - Replace `your_database_name` with the name of the database you created in step 4, and `your_username` with your actual username.
-
-
-TEMP EDIT FOR RENAMING REPO TO PASS LINTING
