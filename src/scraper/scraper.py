@@ -46,10 +46,13 @@ def main():
     url = "https://www.wsj.com/"
     scraper = WSJScraper(url)
     result = scraper.scrape()
-    dollar_price = result['price']
-    headlines = result['headlines']
-    print(f"Dollar price: {dollar_price}")
-    print(f"Headlines: {headlines}")
+    if result is not None:
+        dollar_price = result['price']
+        headlines = result['headlines']
+        print(f"Dollar price: {dollar_price}")
+        print(f"Headlines: {headlines}")
+    else:
+        print("Scraping failed.")
 
 
 if __name__ == "__main__":
