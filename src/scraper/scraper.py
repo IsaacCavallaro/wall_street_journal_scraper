@@ -33,11 +33,16 @@ class WSJScraper:
 
     def scrape(self):
         html = self._get_html()
+        print(html)
         if html is not None:
             soup = BeautifulSoup(html, 'html.parser')
-            price = self._get_price(soup)
-            headlines = self._get_headlines(soup)
-            return {'price': price, 'headlines': headlines}
+            try:
+                price = self._get_price(soup)
+                headlines = self._get_headlines(soup)
+            except Exception:
+                return None
+            else:
+                return {'price': price, 'headlines': headlines}
         else:
             return None
 
