@@ -17,13 +17,14 @@ class WSJScraper:
             return None
 
     def _get_price(self, soup):
-        price_tag = soup.select_one('.WSJTheme--headline--unZqjb45:contains("US$")')
+        price_tag = soup.select_one('#quote_val')
         if price_tag is not None:
-            price_str = re.search(r'US\$\d+(\.\d{1,2})?', price_tag.text)
+            price_str = price_tag.text.strip()
             if price_str is not None:
-                price = float(price_str.group().replace('US$', '').replace(',', ''))
+                price = float(price_str)
                 return price
         return None
+
 
     def _get_headlines(self, soup):
         headlines = []
