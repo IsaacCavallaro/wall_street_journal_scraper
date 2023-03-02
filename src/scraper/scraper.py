@@ -9,30 +9,36 @@ class WSJScraper:
         self.headers = headers
 
     def _get_html(self, url):
-        response = requests.get(url, headers=self.headers)
-        if response.status_code == 200:
+        try:
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()  # raise an error if status code is not 200
             html = response.text
             return html
-        else:
+        except (requests.exceptions.HTTPError, requests.exceptions.RequestException):
             return None
 
     def _get_price(self, soup):
-        price_tag = soup.select_one('#quote_val')
-        if price_tag is not None:
-            price_str = price_tag.text.strip()
-            if price_str is not None:
-                price = float(price_str)
-                return price
-        return None
-
+        try:
+            price_tag = soup.select_one('#quote_val')
+            if price_tag is not None:
+                price_str = price_tag.text.strip()
+                if price_str is not None:
+                    price = float(price_str)
+                    return price
+        except (AttributeError, ValueError):
+            return None
 
     def _get_headlines(self, soup):
         headlines = []
-        headline_tags = soup.select('.WSJTheme--headline--7VCzo7Ay')
-        for tag in headline_tags:
-            headline = tag.text.strip()
-            if headline:
-                headlines.append(headline)
+        try:
+            headline_tags = soup.select('.WSJTheme--headline--7VCzo7Ay')
+            for tag in headline_tags:
+                headline = tag.text.strip()
+                if headline:
+                    headlines.append(headline)
+        except (AttributeError, ValueError):
+            pass
+
         return headlines
 
     def scrape(self):
@@ -72,8 +78,14 @@ def main():
     if result is not None:
         dollar_price = result['price']
         headlines = result['headlines']
-        print(f"Dollar price: {dollar_price}")
-        print(f"Headlines: {headlines}")
+        if dollar_price is not None:
+            print(f"Dollar price: {dollar_price}")
+        else:
+            print("Unable to retrieve dollar price.")
+        if headlines:
+            print(f"Headlines: {headlines}")
+        else:
+            print("Unable to retrieve headlines.")
     else:
         print("Scraping failed.")
 
