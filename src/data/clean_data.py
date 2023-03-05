@@ -2,7 +2,7 @@ import re
 
 
 def clean_headline(headline):
-    # Remove any characters inside parentheses and brackets
+    # Remove any characters inside parentheses AND brackets
     headline = re.sub(r"\([^)]*\)", "", headline)
     headline = re.sub(r"\[[^]]*\]", "", headline)
 
@@ -16,3 +16,15 @@ def clean_headline(headline):
     headline = headline.lower()
 
     return headline
+
+
+def clean_price(price_str):
+    # Remove any non-digit characters from price string
+    price = re.sub(r"[^\d.]", "", price_str)
+
+    try:
+        price = float(price)
+    except ValueError:
+        return None
+
+    return price
