@@ -6,6 +6,9 @@ def clean_headline(headline):
     headline = re.sub(r"\([^)]*\)", "", headline)
     headline = re.sub(r"\[[^]]*\]", "", headline)
 
+    # Remove any instance of "X min read" from the end of the headline
+    headline = re.sub(r"\s+\d+\s+min\s+read$", "", headline)
+
     headline = headline.strip()
 
     # Remove any leading/trailing punctuation marks
@@ -15,7 +18,10 @@ def clean_headline(headline):
     headline = re.sub(r"\s+", " ", headline)
     headline = headline.lower()
 
-    return headline
+    # Remove trailing 'X min read' statements
+    cleaned_headline = re.sub(r"\d+ min read$", "", headline)
+
+    return cleaned_headline
 
 
 def clean_price(price_str):
