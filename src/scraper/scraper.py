@@ -1,7 +1,9 @@
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, too-few-public-methods
 import requests
 from bs4 import BeautifulSoup
-from src.data.clean_data import clean_headline
+from data.clean_data import clean_headline
+from db.database import insert_news_headline, insert_dollar_price
+import datetime
 
 
 class WSJScraper:
@@ -88,10 +90,15 @@ def main():
         headlines = result["headlines"]
         if dollar_price is not None:
             print(f"Dollar price: {dollar_price}")
+            today = datetime.date.today()
+            insert_dollar_price(dollar_price, today)
         else:
             print("Unable to retrieve dollar price.")
         if headlines:
             print(f"Headlines: {headlines}")
+            today = datetime.date.today()
+            for headline in headlines:
+                insert_news_headline(headline, today)
         else:
             print("Unable to retrieve headlines.")
     else:
