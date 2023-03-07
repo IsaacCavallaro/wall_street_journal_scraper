@@ -1,6 +1,7 @@
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring, too-few-public-methods
 import requests
 from bs4 import BeautifulSoup
+from src.data.clean_data import clean_headline
 
 
 class WSJScraper:
@@ -36,7 +37,8 @@ class WSJScraper:
             for tag in headline_tags:
                 headline = tag.text.strip()
                 if headline:
-                    headlines.append(headline)
+                    cleaned_headline = clean_headline(headline)
+                    headlines.append(cleaned_headline)
         except (AttributeError, ValueError):
             pass
 
