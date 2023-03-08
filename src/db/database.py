@@ -5,10 +5,10 @@ from psycopg2 import Error
 def insert_dollar_price(price, date):
     try:
         connection = psycopg2.connect(
-            user="yourusername",
-            password="yourpassword",
-            host="yourhostname",
-            port="yourport",
+            user="isaaccavallaro",
+            password="",
+            host="localhost",
+            port="5432",
             database="wsj_data",
         )
 
@@ -29,10 +29,10 @@ def insert_dollar_price(price, date):
 def insert_news_headline(headline, date):
     try:
         connection = psycopg2.connect(
-            user="yourusername",
-            password="yourpassword",
-            host="yourhostname",
-            port="yourport",
+            user="isaaccavallaro",
+            password="",
+            host="localhost",
+            port="5432",
             database="wsj_data",
         )
 
