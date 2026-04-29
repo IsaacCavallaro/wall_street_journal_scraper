@@ -1,44 +1,71 @@
 # Wall Street Journal Scraper
 
-This project scrapes the Wall Street Journal website for the price of the US dollar and news headlines, and analyzes the data to see if there is any correlation between the headlines and the economy.
+`wall_street_journal_scraper` is a small Python CLI that captures a Wall Street Journal snapshot:
 
+- current DXY quote from WSJ market data
+- normalized WSJ homepage headlines
+- a simple lexical signal summary over the captured headlines
 
-## Setup Database
+The original repo had the right idea but was not production-grade: the package layout was broken, tests hit live network endpoints, and large parts of the project were dead scaffolding. This version keeps the same core idea and modernizes it into a repo that is installable, testable, and easier to extend.
 
-1. Install Homebrew (if you haven't already) by running the following command in your terminal:
+## Stack
+
+- Python 3.11+
+- `requests`
+- `beautifulsoup4`
+- `pytest`
+- `hatchling` via `pyproject.toml`
+
+## Quick Start
+
+Create a virtual environment and install the project in editable mode:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+env -u HTTP_PROXY -u HTTPS_PROXY -u http_proxy -u https_proxy python3 -m venv .venv
+source .venv/bin/activate
+env -u HTTP_PROXY -u HTTPS_PROXY -u http_proxy -u https_proxy python -m pip install --upgrade pip
+env -u HTTP_PROXY -u HTTPS_PROXY -u http_proxy -u https_proxy pip install -e ".[dev]"
 ```
 
----
-
-2. Install PostgreSQL using Homebrew by running the following command:
+Run the CLI:
 
 ```bash
-brew install postgresql
+wsj-scraper
 ```
 
----
+For JSON output:
 
-3. Start the PostgreSQL service using Homebrew:
 ```bash
-brew services start postgresql
+wsj-scraper --format json
 ```
 
----
+## Development
 
-4. Create a new database by running the following command:
-```
-psql -d postgres -U your_username -f sql/create_database.sql
-```
-- Replace `your_username` with your actual username.
+Run tests:
 
----
-
-5. Create the necessary tables by running the following command:
 ```bash
-psql -d your_database_name -U your_username -f sql/create_tables.sql
+pytest
 ```
 
-- Replace `your_database_name` with the name of the database you created in step 4, and `your_username` with your actual username.
+The test suite uses HTML fixtures under `tests/fixtures/` and does not call WSJ live.
+
+## Package Layout
+
+```text
+src/wsj_scraper/
+  analysis.py
+  cleaning.py
+  cli.py
+  client.py
+  models.py
+  parser.py
+tests/
+  fixtures/
+```
+
+## Notes
+
+- Scraping public websites can break when markup changes. The parser is written with fallback selectors, but it is still dependent on WSJ HTML structure.
+- WSJ currently serves anti-bot responses to many unauthenticated requests. When that happens, the CLI exits with a descriptive fetch error instead of silently returning empty data.
+- The signal analysis is intentionally lightweight. It is a quick lexical snapshot, not a rigorous macroeconomic model.
+- If you want persistence later, add it as a separate module once the collection pipeline is stable.
